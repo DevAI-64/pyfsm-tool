@@ -1,0 +1,2 @@
+class FSMException(Exception):
+    pass

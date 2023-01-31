@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyfsm-tool"
+version = "0.1.0"
+authors = [
+  { name="BEL AICH David", email="belaich.david@outlook.fr" },
+]
+description = "pyfsm-tool is a module to create and manipulate finite states machines."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering"
+]
+dependencies = [
+    "pygraph-tool",
+]
+keywords=[
+    "fsm", "pyfsm", "pyfsm-tool",
+    "state", "states", "transition", "transitions",
+    "fintite state machine", "fintite states machine", "finite states machines",
+    "graph", "pygraph", "pygraph-tool"
+]
+license = {text = "MIT"}
+
+[project.urls]
+"Homepage" = "https://github.com/DevAI-64/pyfsm-tool"
