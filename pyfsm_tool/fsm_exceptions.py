@@ -1,2 +1,2 @@
 class FSMException(Exception):
-    pass
+    """Class of exceptions for finite states machine."""
