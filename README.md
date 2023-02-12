@@ -89,6 +89,14 @@ fsm.register_state(Behaviour4(), "b4")
 ```python
 fsm.register_last_state(Behaviour5(), "b5")
 ```
+If state behaviour not inherits `StateBehaviour` class or if state already 
+exists(same id) or if an argument is `None`, then `FSMException` is raise.
+```python
+try:
+    fsm.register_state(Behaviour2(), "b2")
+except FSMException as error:
+    pass  # or do something...
+```
 
 ### Register all transitions
 ```python
@@ -97,6 +105,13 @@ fsm.register_transition("b2", "b3", "t2")
 fsm.register_transition("b3", "b4", "t3")
 fsm.register_transition("b4", "b4", "t4")
 fsm.register_transition("b4", "b5", "t5")
+```
+If transition already exists(same id) or if an argument is `None`, then `FSMException` is raise.
+```python
+try:
+    fsm.register_transition("b1", "b2", "t1")
+except FSMException as error:
+    pass  # or do something...
 ```
 
 ### Run FSM
