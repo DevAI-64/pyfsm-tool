@@ -31,6 +31,7 @@ class StateBehaviour(ABC):
         """Defines the identifier of the next transition.
 
         Returns:
-            str: The next transition id. By default returns "default".
+            str: The next transition id. By default returns
+            "default-<ClassName>".
         """
-        return "default"
+        return f"default-{self.__class__.__name__}"

@@ -1,53 +1,45 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List
 
-from pyfsm_tool.fsm_exceptions import FSMException
-from pyfsm_tool.state_behaviour import StateBehaviour
+from .fsm_exceptions import FSMException
+from .state_behaviour import StateBehaviour
 from pygraph_tool import EdgeException, GraphException, NodeException, Graph
 
 
-class FiniteStateMachine:
+class FiniteStateMachine(Graph):
     """Defines the class that creates and manipulates finite states machine.
 
+    Inherits from Graph.
+
     Attributes:
-        graph (Graph): The finite states machine.
-        id_first_state (Optional[str]): Id for first state of fsm.
-        id_last_state (Optional[str]): Id for last state of fsm.
+        id_first_state (str): Id for first state of fsm.
+        ids_last_states (List[str]): Ids for last states of fsm.
         fsm_data_store (Dict[str, Any]): The data store for fsm.
     """
 
     def __init__(self) -> None:
         """Build the FiniteStateMachine instance."""
-        self._graph: Graph = Graph()
-        self._id_first_state: Optional[str] = None
-        self._id_last_state: Optional[str] = None
+        super().__init__()
+        self._id_first_state: str = ""
+        self._ids_last_states: List[str] = []
         self._fsm_data_store: Dict[str, Any] = {}
 
     @property
-    def graph(self) -> Graph:
-        """The finite states machine."""
-        return self._graph
-
-    @graph.setter
-    def graph(self, graph: Graph) -> None:
-        self._graph = graph
-
-    @property
-    def id_first_state(self) -> Optional[str]:
+    def id_first_state(self) -> str:
         """Id for first state of fsm."""
         return self._id_first_state
 
     @id_first_state.setter
-    def id_first_state(self, id_first_state: Optional[str]) -> None:
+    def id_first_state(self, id_first_state: str) -> None:
         self._id_first_state = id_first_state
 
     @property
-    def id_last_state(self) -> Optional[str]:
-        """Id for last state of fsm."""
-        return self._id_last_state
+    def ids_last_states(self) -> List[str]:
+        """Ids for last states of fsm."""
+        return self._ids_last_states
 
-    @id_last_state.setter
-    def id_last_state(self, id_last_state: Optional[str]) -> None:
-        self._id_last_state = id_last_state
+    @ids_last_states.setter
+    def ids_last_states(self, ids_last_states: List[str]) -> None:
+        self._ids_last_states = ids_last_states
 
     @property
     def fsm_data_store(self) -> Dict[str, Any]:
@@ -77,7 +69,7 @@ class FiniteStateMachine:
                 f"State {id_state} is impossible to register."
             )
         try:
-            self._graph.add_node(
+            self.add_node(
                 node_content=state_behaviour, node_id=id_state
             )
         except (NodeException, GraphException) as error:
@@ -108,7 +100,10 @@ class FiniteStateMachine:
             state_behaviour (StateBehaviour): State behaviour.
             id_last_state (str): State identifier for last state.
         """
-        self._id_last_state = id_last_state
+        self._ids_last_states = [
+            *self._ids_last_states,
+            id_last_state
+        ]
         self.register_state(
             state_behaviour=state_behaviour, id_state=id_last_state
         )
@@ -127,7 +122,7 @@ class FiniteStateMachine:
             FSMException: If transition is impossible to register.
         """
         try:
-            self._graph.add_unidirectional_edge(
+            self.add_unidirectional_edge(
                 node_id_start=id_state_start,
                 node_id_end=id_state_end,
                 edge_id=id_transition,
@@ -143,7 +138,7 @@ class FiniteStateMachine:
     ) -> None:
         """Register default transition between two states.
 
-        Transition identifier is "default".
+        Transition identifier is "default-<StartNodeClassName>".
 
         Args:
             id_state_start (str): State identifier for start transition.
@@ -152,7 +147,11 @@ class FiniteStateMachine:
         self.register_transition(
             id_state_start=id_state_start,
             id_state_end=id_state_end,
-            id_transition="default",
+            id_transition=(
+                f"default-{self.get_node(
+                    id_state_start
+                ).node_content.__class__.__name__}"
+            ),
         )
 
     def _get_state_content(self, id_state: str) -> StateBehaviour:
@@ -167,7 +166,7 @@ class FiniteStateMachine:
         Returns:
             StateBehaviour: The current state content.
         """
-        for state in self._graph.nodes:
+        for state in self.nodes:
             if state.node_id == id_state:
                 return state.node_content
         raise FSMException(f"State id {id_state} not found.")
@@ -184,7 +183,7 @@ class FiniteStateMachine:
         Returns:
             str: Next state identifier.
         """
-        for transition in self._graph.edges:
+        for transition in self.edges:
             if transition.edge_id == id_transition:
                 return transition.node_end.node_id
         raise FSMException(f"Transition id {id_transition} not found.")
@@ -201,18 +200,17 @@ class FiniteStateMachine:
             **self._fsm_data_store,
         }
         behaviour.action()
+        self._fsm_data_store = {
+            **self._fsm_data_store,
+            **behaviour.state_data_store,
+        }
 
-        if id_state == self._id_last_state:
+        if id_state in self._ids_last_states:
             return
 
         next_state_id: str = self._get_next_state_id(
             id_transition=behaviour.next_transition_id()
         )
-        self._fsm_data_store = {
-            **self._fsm_data_store,
-            **behaviour.state_data_store,
-        }
-        # behaviour.state_data_store = self._fsm_data_store
 
         self._state_process(id_state=next_state_id)
 
