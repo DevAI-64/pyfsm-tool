@@ -7,3 +7,4 @@ env-poetry/
 .tox/
 .python-version
 .github/
+.mypy_cache

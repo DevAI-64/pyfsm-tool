@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyfsm-tool"
-version = "0.9.0"
+version = "v0.9.0"
 description = "pyfsm-tool is a module to create and manipulate finite states machines."
 authors = ["BEL AICH David <belaich.david@outlook.fr>"]
 maintainers = [
