@@ -1,32 +1,49 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "pyfsm-tool"
-version = "0.2.0"
-authors = [
-  { name="BEL AICH David", email="belaich.david@outlook.fr" },
-]
+version = "1.0.0"
 description = "pyfsm-tool is a module to create and manipulate finite states machines."
+authors = ["BEL AICH David <belaich.david@outlook.fr>"]
+maintainers = [
+    "BEL AICH David <belaich.david@outlook.fr>"
+]
 readme = "README.md"
-requires-python = ">=3.7"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Development Status :: 5 - Production/Stable",
-    "License :: OSI Approved :: MIT License",
-    "Topic :: Scientific/Engineering"
-]
-dependencies = [
-    "pygraph-tool",
-]
+packages = [{include = "src"}]
+license = "MIT"
+repository = "https://github.com/DevAI-64/pyfsm-tool"
 keywords=[
     "fsm", "pyfsm", "pyfsm-tool",
     "state", "states", "transition", "transitions",
     "fintite state machine", "fintite states machine", "finite states machines",
     "graph", "pygraph", "pygraph-tool"
 ]
-license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering"
+]
+include = ["LICENSE", "README.md"]
 
-[project.urls]
-"Homepage" = "https://github.com/DevAI-64/pyfsm-tool"
+[tool.black]
+line-length = 79
+
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+pygraph-tool = "^0.2.0"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+flake8 = "^7.0.0"
+pylint = "^3.2.2"
+tox = "^4.0.0"
+tox-gh-actions = "^3.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

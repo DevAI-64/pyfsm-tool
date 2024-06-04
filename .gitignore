@@ -1,0 +1,9 @@
+.pytest_cache
+dist/
+pyfsm_tool.egg-info/
+src/pyfsm_tool/__pycache__
+tests/__pycache__
+env-poetry/
+.tox/
+.python-version
+.github/

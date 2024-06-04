@@ -1,8 +1,10 @@
+"""Finite state machine module"""
+
 from typing import Any, Dict, List
 
+from pygraph_tool import EdgeException, GraphException, NodeException, Graph
 from .fsm_exceptions import FSMException
 from .state_behaviour import StateBehaviour
-from pygraph_tool import EdgeException, GraphException, NodeException, Graph
 
 
 class FiniteStateMachine(Graph):
@@ -50,6 +52,9 @@ class FiniteStateMachine(Graph):
     def fsm_data_store(self, fsm_data_store: Dict[str, Any]) -> None:
         self._fsm_data_store = fsm_data_store
 
+    def add_bidirectional_edge(self) -> None:
+        pass
+
     def register_state(
         self, state_behaviour: StateBehaviour, id_state: str
     ) -> None:
@@ -69,9 +74,7 @@ class FiniteStateMachine(Graph):
                 f"State {id_state} is impossible to register."
             )
         try:
-            self.add_node(
-                node_content=state_behaviour, node_id=id_state
-            )
+            self.add_node(node_content=state_behaviour, node_id=id_state)
         except (NodeException, GraphException) as error:
             raise FSMException(
                 f"State {id_state} is impossible to register: {error}"
@@ -100,10 +103,7 @@ class FiniteStateMachine(Graph):
             state_behaviour (StateBehaviour): State behaviour.
             id_last_state (str): State identifier for last state.
         """
-        self._ids_last_states = [
-            *self._ids_last_states,
-            id_last_state
-        ]
+        self._ids_last_states = [*self._ids_last_states, id_last_state]
         self.register_state(
             state_behaviour=state_behaviour, id_state=id_last_state
         )
@@ -144,14 +144,11 @@ class FiniteStateMachine(Graph):
             id_state_start (str): State identifier for start transition.
             id_state_end (str): State identifier for end transition.
         """
+        node_content: Any = self.get_node(id_state_start).node_content
         self.register_transition(
             id_state_start=id_state_start,
             id_state_end=id_state_end,
-            id_transition=(
-                f"default-{self.get_node(
-                    id_state_start
-                ).node_content.__class__.__name__}"
-            ),
+            id_transition=f"default-{node_content.__class__.__name__}",
         )
 
     def _get_state_content(self, id_state: str) -> StateBehaviour:

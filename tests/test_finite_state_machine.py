@@ -169,13 +169,13 @@ def test_register_default_transition(
     fsm_with_states.register_default_transition(
         "intermediary_state", "last_state_1"
     )
+    node_content_fs: Any = fsm_with_states.get_node("first_state").node_content
+    node_content_intermediary: Any = fsm_with_states.get_node(
+        "intermediary_state"
+    ).node_content
     results: List[str] = [
-        f"default-{fsm_with_states.get_node(
-            'first_state'
-        ).node_content.__class__.__name__}",
-        f"default-{fsm_with_states.get_node(
-            'intermediary_state'
-        ).node_content.__class__.__name__}"
+        f"default-{node_content_fs.__class__.__name__}",
+        f"default-{node_content_intermediary.__class__.__name__}"
     ]
     assert(
         results == [edge.edge_id for edge in fsm_with_states.edges]
