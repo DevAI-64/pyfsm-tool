@@ -1,4 +1,4 @@
-from src.pyfsm_tool.state_behaviour import StateBehaviour
+from pyfsm_tool.state_behaviour import StateBehaviour
 import pytest
 
 

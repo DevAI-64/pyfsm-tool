@@ -1,8 +1,8 @@
 from typing import Any, Dict, List
 
-from src.pyfsm_tool.finite_state_machine import FiniteStateMachine
-from src.pyfsm_tool.fsm_exceptions import FSMException
-from src.pyfsm_tool.state_behaviour import StateBehaviour
+from pyfsm_tool.finite_state_machine import FiniteStateMachine
+from pyfsm_tool.fsm_exceptions import FSMException
+from pyfsm_tool.state_behaviour import StateBehaviour
 import pytest
 
 
