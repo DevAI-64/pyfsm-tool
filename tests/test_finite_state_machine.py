@@ -157,7 +157,7 @@ def test_register_transition_without_exception(
         fsm_with_states.edges[0].node_start.node_id,
         fsm_with_states.edges[0].node_end.node_id
     ]
-    assert(results == ["t1", "first_state", "intermediary_state"])
+    assert(results == ["t1-FirstState", "first_state", "intermediary_state"])
 
 
 def test_register_default_transition(
@@ -213,7 +213,7 @@ def test_get_next_state_id_without_exception(
     fsm_with_states.register_transition(
         "first_state", "intermediary_state", "t1"
     )
-    assert(fsm_with_states._get_next_state_id("t1") == "intermediary_state")
+    assert(fsm_with_states._get_next_state_id("t1-FirstState") == "intermediary_state")
 
 
 def test_state_process_last_state_1(
@@ -257,3 +257,28 @@ def test_attributes(
         *fsm_with_states_and_transitions_1.ids_last_states
     ]
     assert(results == ["first_state", "last_state_1", "last_state_2"])
+
+
+def test_normalize_transition_id(
+    fsm_with_states_and_transitions_1: FiniteStateMachine
+) -> None:
+    assert(
+        fsm_with_states_and_transitions_1._normalize_transition_id(
+            FirstState(), "toto"
+        ) == "toto-FirstState"
+    )
+
+
+def test_same_transition_id(
+    fsm_with_states_and_transitions_1: FiniteStateMachine
+) -> None:
+    fsm_with_states_and_transitions_1.register_transition(
+        "first_state", "last_state_1", "t1"
+    )
+    all_edges_id: List[str] = [
+        edge.edge_id for edge in fsm_with_states_and_transitions_1.edges
+    ]
+    assert(
+        "t1-FirstState" in all_edges_id and
+        "t1-IntermediaryState" in all_edges_id
+    )

@@ -125,7 +125,9 @@ class FiniteStateMachine(Graph):
             self.add_unidirectional_edge(
                 node_id_start=id_state_start,
                 node_id_end=id_state_end,
-                edge_id=id_transition,
+                edge_id=self._normalize_transition_id(
+                    self._get_state_content(id_state_start), id_transition
+                ),
             )
         except (EdgeException, GraphException) as error:
             raise FSMException(
@@ -144,11 +146,11 @@ class FiniteStateMachine(Graph):
             id_state_start (str): State identifier for start transition.
             id_state_end (str): State identifier for end transition.
         """
-        node_content: Any = self.get_node(id_state_start).node_content
+        behaviour: StateBehaviour = self._get_state_content(id_state_start)
         self.register_transition(
             id_state_start=id_state_start,
             id_state_end=id_state_end,
-            id_transition=f"default-{node_content.__class__.__name__}",
+            id_transition=f"default-{behaviour.__class__.__name__}",
         )
 
     def _get_state_content(self, id_state: str) -> StateBehaviour:
@@ -206,10 +208,29 @@ class FiniteStateMachine(Graph):
             return
 
         next_state_id: str = self._get_next_state_id(
-            id_transition=behaviour.next_transition_id()
+            id_transition=self._normalize_transition_id(
+                behaviour, behaviour.next_transition_id()
+            )
         )
 
         self._state_process(id_state=next_state_id)
+
+    def _normalize_transition_id(
+        self, behaviour: StateBehaviour, id_transition: str
+    ) -> str:
+        """Normalize transition id (lower case and add class name).
+
+        Args:
+            behaviour (StateBehaviour): The behaviour (node content).
+            id_transition (str): The transition id before normalization.
+
+        Returns:
+            str: The transition id normalized.
+        """
+        class_name: str = behaviour.__class__.__name__
+        if id_transition != f"default-{class_name}":
+            id_transition = f"{id_transition.lower()}-{class_name}"
+        return id_transition
 
     def run(self) -> None:
         """Run the finite states machine."""

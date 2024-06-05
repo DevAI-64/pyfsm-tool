@@ -28,13 +28,19 @@ include = ["LICENSE", "README.md", "CHANGELOG.md"]
 line-length = 79
 
 
+[tool.coverage.report]
+include = ["pyfsm_tool/*.py"]
+show_missing = true
+
+
 [tool.poetry.dependencies]
 python = "^3.8.1"
-pygraph-tool = "^0.2.0"
+pygraph-tool = "^0.9.0"
 
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
+coverage = "^7.5.3"
 
 
 [tool.poetry.group.dev.dependencies]

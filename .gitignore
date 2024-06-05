@@ -8,3 +8,4 @@ env-poetry/
 .python-version
 .github/
 .mypy_cache
+.coverage
